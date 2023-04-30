@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kinship Term Learning Experiment</title>
+        <script src="https://unpkg.com/jspsych@7.3.2"></script>
+        <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.1"></script>
+        <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.2"></script>
+        <script src="https://unpkg.com/@jspsych/plugin-external-html@1.1.2"></script>
+        <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script>
+        <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <link href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+        <script src="kinship_experiment.js"></script>
+        <style>
+            circle
+            {
+                fill: #ffe6f2;
+                stroke: silver;
+                stroke-width: 2;
+            }
+            path
+            {
+                fill: none;
+                stroke: silver;
+            }
+            .rbcorner
+            {
+                position: absolute;
+                bottom: 5px;
+                right: 0px;
+                font-size: 40px;
+                height:80px;
+                width:80px;
+                display: inline-block;
+            }
+            .bigger
+            {
+                font-size: 20px
+            }
+            .hide
+            {
+                visibility: hidden;
+            }
+            .male
+            {
+                fill:lightblue;
+            }
+            .ego
+            {
+                fill:black
+            }
+            .data_demo
+            {
+                stroke: red;
+                stroke-width: 4;
+            }
+            .silver
+            {
+                stroke: silver;
+            }
+            .button_panel {
+                width: 2000px;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 50px;
+            }
+            .frame_big{
+                width: 2000px;
+                margin-left: auto;
+                margin-right: auto;
+                background-color: #F0F0F0;
+                border-radius: 5px;
+                box-shadow: inset 1px 1px 1px 1px;
+                padding: 10px 20px 10px 20px;
+                text-align: center;
+            }
+            button {
+                font-size: 30px;
+                color: white;
+                width: 200px;
+                height: 80px;
+                background-color: #90cf76;
+                border-radius: 10px;
+                border: 1px solid #75a860;
+                margin: 30px auto 0px auto;
+                display:block;
+            }
+            .render_tree{
+                text-align: center;
+            }
+            svg{
+                margin-left:auto;
+                margin-right:auto;
+                display:block;
+            }
+        </style>
+    </head>
+    <body> 
+        <div class = "frame_big">
+            <div id="Introduction">
+                <h3 style='text-align:center; font-Family:arial; font-Size:100px; position:relative'>Welcome to the experiment</h3>
+                <p style='text-align:center; font-Family:arial; font-Size:45px; position:relative'>Experiments begin with an information sheet that explains to the participant 
+                what they will be doing, how their data will be used, and how they will be
+                remunerated.</p> 
+                <p style='text-align:center; font-Family:arial; font-Size:45px; position:relative'>This is a placeholder for that information, which is normally reviewed
+                as part of the ethical review process.</p>
+            </div>
+            <div id="Example_Shown_Text">
+                <h3 style='text-align:center; font-Family:arial; font-Size:45px'>This is a <span id="trial_word_1"></span></h3>
+                <p style='text-align:center; font-Family:arial; font-Size:36px'>When you are ready, click the 'Next' button to continue</p> 
+            </div>
+            <div id="Selection_Shown_Text">
+                <p style='text-align:center; font-Family:arial; font-Size:45px'>Please select everyone on the family tree who is a <span id="trial_word_2"></span></p>
+                <div id = 'selection_fail'>
+                    <p style='text-align:center; font-Family:arial; font-Size:45px; color: red'>You have not selected anyone on the tree!</p>
+                 </div> 
+            </div>
+            <body> 
+                <div id="render_tree">
+                    <p>
+                    <script>
+                    let screen_width = screen.availWidth;
+                    console.log(screen_width)
+                    var width_diff = screen_width-1050
+                    console.log(width_diff)
+                    var distance = width_diff/2;
+                    console.log(distance)
+
+                    var selected = [];
+        
+                    var svg = d3.select("body").append("svg")
+                            .attr("width", 4000).attr("height", 1000)
+                            .append("g").attr("transform", "translate(1000,10)");
+                    var data =  [{"child":"c", "parent":"a", "gender": "f", "spouse":"Sc", "spouse_gender":"m"},
+                                {"child":"j", "parent":"e", "gender": "m", "spouse":"Sj", "spouse_gender":"f"},
+                                {"child":"X", "parent":"a", "ego":"T", "spouse":"SX", "spouse_gender":"m"},
+                                {"child":"d", "parent":"a", "gender": "m", "spouse":"Sd", "spouse_gender":"f"},
+                                {"child":"e", "parent":"link", "gender": "f", "spouse":"Si", "spouse_gender":"m"},
+                                {"child":"i", "parent":"e", "gender": "f", "spouse":"m", "spouse_gender":"m"},
+                                {"child":"a", "parent":"e", "gender": "f", "spouse":"b", "spouse_gender":"m"},
+                                {"child":"m", "parent":"i", "gender": "f"},
+                                {"child":"n", "parent":"i", "gender": "m"},
+                                {"child":"o", "parent":"j", "gender": "f"},
+                                {"child":"p", "parent":"j", "gender": "m"},
+                                {"child":"g", "parent":"link", "gender": "f", "spouse": "h", "spouse_gender":"m"},
+                                {"child":"l", "parent":"g", "gender": "m", "spouse":"Sl", "spouse_gender":"f"},
+                                {"child":"k", "parent":"g", "gender": "f", "spouse":"Sm", "spouse_gender":"m"},
+                                {"child":"q", "parent":"k", "gender": "f"},
+                                {"child":"r", "parent":"k", "gender": "m"},
+                                {"child":"s", "parent":"l", "gender": "f"},
+                                {"child":"t", "parent":"l", "gender": "m"},
+                                {"child":"link", "parent":"", "gender": "f"},
+                                {"child":"Xa", "parent":"X", "gender": "f", "spouse":"SXa", "spouse_gender":"m"},
+                                {"child":"Xb", "parent":"X", "gender": "m", "spouse":"SXb", "spouse_gender":"f"},
+                                {"child":"Xc", "parent":"Xa", "gender": "f"},
+                                {"child":"Xd", "parent":"Xa", "gender": "m"},
+                                {"child":"Xe", "parent":"Xb", "gender": "f"},
+                                {"child":"Xf", "parent":"Xb", "gender": "m"},
+                                {"child":"Xg", "parent":"c", "gender": "f", "spouse":"SXg", "spouse_gender":"m"},
+                                {"child":"Xh", "parent":"c", "gender": "m", "spouse":"SXh", "spouse_gender":"f"},
+                                {"child":"Xi", "parent":"d", "gender": "f", "spouse":"SXi", "spouse_gender":"m"},
+                                {"child":"Xj", "parent":"d", "gender": "m", "spouse":"SXj", "spouse_gender":"f"},
+                                {"child":"Xk", "parent":"Xg", "gender": "f"},
+                                {"child":"Xl", "parent":"Xg", "gender": "m"},
+                                {"child":"Xm", "parent":"Xh", "gender": "f"},
+                                {"child":"Xn", "parent":"Xh", "gender": "m"},
+                                {"child":"Xo", "parent":"Xi", "gender": "f"},
+                                {"child":"Xp", "parent":"Xi", "gender": "m"},
+                                {"child":"Xq", "parent":"Xj", "gender": "f"},
+                                {"child":"Xr", "parent":"Xj", "gender": "m"},
+                            ];
+                    var dataStructure = d3.stratify()
+                                            .id(function(d){return d.child;})
+                                            .parentId(function(d){return d.parent;})
+                                            (data);
+                    var treeStructure = d3.tree().size([2100,800]);
+                    var information = treeStructure(dataStructure);
+                    </script>
+                    </p>
+                </div>
+        </div>
+
+        <div class ="button_panel">
+            <button onclick="next_trial()" id="sub_select">Submit Selection</button>
+            <button onclick="example_trial()" id="intro_button">I agree</button>
+            <button onclick="selection_trial()" id="e_trial_button">Next</button>
+		</div>
+        
+    
+    <body></body>
+
+</html>
